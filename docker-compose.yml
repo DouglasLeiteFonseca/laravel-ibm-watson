@@ -1,0 +1,33 @@
+version: '2'
+services:
+  api:
+    build:
+      context: ./
+      dockerfile: api.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./public:/var/www
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=localhost"
+    networks:
+      main:
+        aliases:
+          - api.laravel
+    restart: always
+  web:
+    build:
+      context: ./
+      dockerfile: web.dockerfile
+    working_dir: /var/www
+    volumes_from:
+      - api
+    ports:
+      - 9000:80
+    restart: always
+    networks:
+      main:
+        aliases:
+          - api.laravel
+networks:
+  main:
